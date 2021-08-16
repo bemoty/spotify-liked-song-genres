@@ -1,0 +1,71 @@
+{
+  "spotify": {
+    "client_id": "",
+    "client_secret": "",
+    "redirect_uri": "",
+    "scopes": [
+      "user-read-email",
+      "user-read-private",
+      "playlist-read-collaborative",
+      "playlist-modify-public",
+      "playlist-read-private",
+      "playlist-modify-private",
+      "user-library-modify",
+      "user-library-read",
+      "user-top-read"
+    ],
+    "playlists": [
+      {
+        "id": "4IdhDun3PUkmKIBMO4uEor",
+        "name": "Liked Songs - Rap",
+        "genres": [
+          "rap",
+          "hip hop",
+          "pop rap",
+          "german hip hop",
+          "german cloud rap",
+          "conscious hip hop",
+          "gangster rap",
+          "underground hip hop",
+          "east coast hip hop",
+          "southern hip hop",
+          "melodic rap",
+          "atl hip hop",
+          "hardcore hip hop",
+          "dfw rap",
+          "north carolina hip hop",
+          "queens hip hop",
+          "emo rap",
+          "detroit hip hop",
+          "chicago rap",
+          "alternative hip hop",
+          "ohio hip hop",
+          "miami hip hop",
+          "k-rap"
+        ]
+      },
+      {
+        "id": "0bXboQnWH4GMItyA800KH3",
+        "name": "Liked Songs - EDM",
+        "genres": [
+          "edm",
+          "electro house",
+          "dancefloor dnb",
+          "gaming edm",
+          "chillstep",
+          "brostep",
+          "bouncy house",
+          "bmore",
+          "drum and bass",
+          "jump up",
+          "liquid funk",
+          "tekk"
+        ]
+      }
+    ]
+  },
+  "server": {
+    "host": "http://localhost",
+    "port": "8080"
+  }
+}

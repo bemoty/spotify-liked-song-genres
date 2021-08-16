@@ -1,0 +1,33 @@
+{
+  "name": "spotify-liked-song-genres",
+  "version": "1.0.0",
+  "description": "Spotify application sorting liked songs into playlists by genre",
+  "main": "src/main.js",
+  "scripts": {
+    "dev": "node src/main.js",
+    "start": "NODE_ENV=production node src/main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bemoty/spotify-liked-song-genres.git"
+  },
+  "keywords": [
+    "spotify",
+    "spotify-application",
+    "music"
+  ],
+  "author": "Bemoty",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/bemoty/spotify-liked-song-genres/issues"
+  },
+  "homepage": "https://github.com/bemoty/spotify-liked-song-genres#readme",
+  "dependencies": {
+    "config": "^3.3.6",
+    "cookie-parser": "^1.4.5",
+    "express": "^4.17.1",
+    "log4js": "^6.3.0",
+    "node-cron": "^3.0.0",
+    "spotify-web-api-node": "^5.0.2"
+  }
+}
