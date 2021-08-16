@@ -1,0 +1,24 @@
+name: Docker Pipeline
+
+on:
+  push:
+    branches: [ master ]
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: docker login
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+        run: |
+          docker login https://docker.pkg.github.com -u $DOCKER_USER -p $DOCKER_PASS
+      - name: docker build
+        run: |
+          docker build . -t docker.pkg.github.com/bemoty/spotify-liked-song-genres/app:latest
+      - name: docker push
+        run: |
+          docker push docker.pkg.github.com/bemoty/spotify-liked-song-genres/app:latest
