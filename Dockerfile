@@ -1,4 +1,4 @@
-FROM node:14
+FROM node:alpine
 LABEL com.josholaus.musicquiz.authors="josh@bemoty.dev"
 WORKDIR /home/app/
 
