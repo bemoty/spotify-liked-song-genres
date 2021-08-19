@@ -43,9 +43,44 @@ server(spotifyApi, async () => {
       logger.error("Illegal arguments");
       return;
     }
+    if (input.startsWith("mmap")) {
+      let str = input.split(" ");
+      if (str.length === 1) {
+        mmapCommand();
+        return;
+      }
+      logger.error("Illegal arguments");
+      return;
+    }
     logger.error("Unknown command");
   });
 });
+
+async function mmapCommand() {
+  const data = await getSavedTracks();
+  logger.info(`Successfully loaded ${data.length} songs`);
+  const artistData = await getArtistsForTracks(data);
+  logger.info("Loaded artist info, calculating missing genre mappings");
+  const genres = config
+    .get("spotify.playlists")
+    .map((p) => p.genres)
+    .flat();
+  const martists = artistData.filter(
+    (a) => a.genres.filter((g) => genres.includes(g)).length === 0
+  );
+  if (martists.length === 0) {
+    logger.info("No missing artist mappings");
+    return;
+  }
+  logger.info("The following artists lack artist genre mappings:");
+  for (let artist of martists) {
+    logger.info(
+      `${artist.name} ++++ ${
+        artist.genres.length === 0 ? "NOT RATED" : artist.genres
+      }`
+    );
+  }
+}
 
 async function mainLoop() {
   const data = await getSavedTracks();
@@ -84,8 +119,7 @@ async function mainLoop() {
   logger.info("Successfully completed main loop");
 }
 
-async function decorateArtistGenres(tracks) {
-  logger.info("Loading artist genre information...");
+async function getArtistsForTracks(tracks) {
   const artists = tracks
     .map((a) => a.track.artists[0].id)
     .filter((value, index, self) => self.indexOf(value) === index);
@@ -101,6 +135,12 @@ async function decorateArtistGenres(tracks) {
     const ad = await spotifyApi.getArtists(chunk);
     artistData.push(...ad.body.artists);
   }
+  return artistData;
+}
+
+async function decorateArtistGenres(tracks) {
+  logger.info("Loading artist genre information...");
+  const artistData = await getArtistsForTracks(tracks);
   for (let i = 0; i < tracks.length; i++) {
     const artistId = tracks[i].track.artists[0].id;
     const data = artistData.filter((a) => a.id === artistId);
