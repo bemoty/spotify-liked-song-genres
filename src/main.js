@@ -34,6 +34,7 @@ server(spotifyApi, async () => {
     output: process.stdout,
   });
   readline.on("line", (input) => {
+    input = input.trim();
     if (input.startsWith("reload")) {
       let str = input.split(" ");
       if (str.length === 1) {
@@ -47,6 +48,15 @@ server(spotifyApi, async () => {
       let str = input.split(" ");
       if (str.length === 1) {
         mmapCommand();
+        return;
+      }
+      logger.error("Illegal arguments");
+      return;
+    }
+    if (input.startsWith("ga")) {
+      let str = input.split(" ");
+      if (str.length === 2) {
+        gaCommand(str[1]);
         return;
       }
       logger.error("Illegal arguments");
@@ -79,6 +89,19 @@ async function mmapCommand() {
         artist.genres.length === 0 ? "NOT RATED" : artist.genres
       }`
     );
+  }
+}
+
+async function gaCommand(artist) {
+  try {
+    const data = await spotifyApi.getArtist(artist);
+    logger.info(
+      `${data.body.name} +++ ${
+        data.body.genres.length === 0 ? "NOT RATED" : data.body.genres
+      }`
+    );
+  } catch (_) {
+    logger.error("This artist does not exist");
   }
 }
 
