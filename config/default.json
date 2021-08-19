@@ -43,7 +43,8 @@
           "miami hip hop",
           "k-rap"
         ],
-        "ngenres": ["pop"]
+        "ngenres": ["pop"],
+        "aoverride": ["ENNY"]
       },
       {
         "id": "0bXboQnWH4GMItyA800KH3",

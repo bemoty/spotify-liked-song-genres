@@ -75,9 +75,16 @@ async function mmapCommand() {
     .get("spotify.playlists")
     .map((p) => p.genres)
     .flat();
-  const martists = artistData.filter(
+  let martists = artistData.filter(
     (a) => a.genres.filter((g) => genres.includes(g)).length === 0
   );
+  const overrides = config
+    .get("spotify.playlists")
+    .map((p) => p.aoverride)
+    .flat();
+  if (overrides.length !== 0) {
+    martists = martists.filter((a) => !overrides.includes(a.name));
+  }
   if (martists.length === 0) {
     logger.info("No missing artist mappings");
     return;
@@ -123,6 +130,13 @@ async function mainLoop() {
           .map((_, i) => i),
         p.body.snapshot_id
       );
+    }
+    if (playlist.aoverride) {
+      for (let track of data) {
+        if (playlist.aoverride.includes(track.track.artists[0].name)) {
+          track.genres.push(playlist.genres[0]);
+        }
+      }
     }
     let tracks = data.filter(
       (t) => t.genres.filter((v) => playlist.genres.includes(v)).length !== 0
