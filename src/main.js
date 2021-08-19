@@ -124,9 +124,14 @@ async function mainLoop() {
         p.body.snapshot_id
       );
     }
-    const tracks = data.filter(
+    let tracks = data.filter(
       (t) => t.genres.filter((v) => playlist.genres.includes(v)).length !== 0
     );
+    if (playlist.ngenres) {
+      tracks = tracks.filter(
+        (t) => t.genres.filter((v) => playlist.ngenres.includes(v)).length === 0
+      );
+    }
     const chunkSize = 100;
     const splitTracks = splitChunk(tracks, chunkSize);
     let part = 0;
