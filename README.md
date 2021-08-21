@@ -4,10 +4,7 @@
 
 This application retrieves the "Liked Songs" of a linked Spotify account once every day and then sorts them into predefined playlists with assigned genres.
 
-<video loop preload> 
-    <source src=".github/action.mp4"></source> 
-    <source src=".github/action.webm"></source> 
-</video>
+[![Demo](https://github.com/bemoty/spotify-liked-song-genres/blob/main/.github/action.gif)](https://github.com/bemoty/spotify-liked-song-genres/blob/main/.github/action.mp4)
 
 ## Installation
 
