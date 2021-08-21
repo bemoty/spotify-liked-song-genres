@@ -1,5 +1,5 @@
 FROM node:alpine
-LABEL com.josholaus.musicquiz.authors="josh@bemoty.dev"
+LABEL dev.bemoty.spotify-liked-song-genres.authors="josh@bemoty.dev"
 WORKDIR /home/app/
 
 COPY . .
