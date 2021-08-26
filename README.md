@@ -46,7 +46,7 @@ I also added some utility commands.
 | `check`           | retrieves all liked songs and checks if there are any artists which can't be put in any playlists because their genres have no mapping |
 | `info [artistId]` | retrieves the genres of an artist (takes 1 argument: the artist ID)                                                                    |
 
-## Finishing words
+## By the way...
 
 This was a quick afternoon project I made basically just for use by me. With that being said, I do not take any responsibility for anything this application does, such as your Spotify playlists getting messed up. Please only use this application if you know what you're doing.
 
