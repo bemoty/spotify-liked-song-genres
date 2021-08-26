@@ -1,4 +1,4 @@
-const config = require("config");
+const config = require("config-uncached");
 const log4js = require("log4js");
 const cron = require("node-cron");
 const SpotifyWebApi = require("spotify-web-api-node");
@@ -18,9 +18,9 @@ log4js.configure({
 
 const logger = log4js.getLogger("SpotifyApp");
 const spotifyApi = new SpotifyWebApi({
-  clientId: config.get("spotify.client_id"),
-  clientSecret: config.get("spotify.client_secret"),
-  redirectUri: config.get("spotify.redirect_uri"),
+  clientId: config().get("spotify.client_id"),
+  clientSecret: config().get("spotify.client_secret"),
+  redirectUri: config().get("spotify.redirect_uri"),
 });
 
 server(spotifyApi, async () => {
@@ -71,14 +71,14 @@ async function mmapCommand() {
   logger.info(`Successfully loaded ${data.length} songs`);
   const artistData = await getArtistsForTracks(data);
   logger.info("Loaded artist info, calculating missing genre mappings");
-  const genres = config
+  const genres = config(true)
     .get("spotify.playlists")
     .map((p) => p.genres)
     .flat();
   let martists = artistData.filter(
     (a) => a.genres.filter((g) => genres.includes(g)).length === 0
   );
-  const overrides = config
+  const overrides = config()
     .get("spotify.playlists")
     .map((p) => p.aoverride)
     .flat();
@@ -117,9 +117,9 @@ async function mainLoop() {
   logger.info(`Successfully loaded ${data.length} songs`);
   await decorateArtistGenres(data);
   logger.info(
-    `Populating ${config.get("spotify.playlists").length} playlist(s)`
+    `Populating ${config(true).get("spotify.playlists").length} playlist(s)`
   );
-  for (let playlist of config.get("spotify.playlists")) {
+  for (let playlist of config().get("spotify.playlists")) {
     logger.info(`Populating playlist '${playlist.name}'`);
     const p = await spotifyApi.getPlaylist(playlist.id);
     if (p.body.tracks.total > 0) {

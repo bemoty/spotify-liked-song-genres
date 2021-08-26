@@ -1,4 +1,4 @@
-const config = require("config");
+const config = require("config-uncached");
 const log4js = require("log4js");
 const express = require("express");
 const cookieParser = require("cookie-parser");
@@ -13,7 +13,7 @@ function Server(spotifyApi, authorizedCallback) {
     const state = Math.random().toString(20).substr(2, 10);
     res.cookie(stateKey, state);
     res.redirect(
-      spotifyApi.createAuthorizeURL(config.get("spotify.scopes"), state)
+      spotifyApi.createAuthorizeURL(config().get("spotify.scopes"), state)
     );
   });
   app.get("/callback", (req, res) => {
@@ -60,10 +60,10 @@ function Server(spotifyApi, authorizedCallback) {
         res.send(`An error occurred while performing authorization: ${err}`);
       });
   });
-  const port = config.get("server.port");
+  const port = config().get("server.port");
   const server = app.listen(port, () => {
     logger.info(
-      `Initialized Spotify Web API, please authorize at ${config.get(
+      `Initialized Spotify Web API, please authorize at ${config().get(
         "server.host"
       )}${port === "80" || port === "443" ? "" : `:${port}`}/login`
     );
