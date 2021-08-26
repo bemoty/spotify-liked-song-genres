@@ -15,7 +15,6 @@ async function infoCommand(args, spotifyApi) {
       }`
     );
   } catch (_) {
-    console.log(_);
     logger.error("This artist does not exist");
   }
 }
