@@ -24,7 +24,12 @@ const spotifyApi = new webapi({
   redirectUri: config().get("spotify.redirect_uri"),
 });
 
-server(spotifyApi, async () => {
+server(spotifyApi, async (expires_in) => {
+  setInterval(async () => {
+    const data = await spotifyApi.refreshAccessToken();
+    logger.info("The access token has been refreshed");
+    spotifyApi.setAccessToken(data.body["access_token"]);
+  }, (expires_in / 2) * 1000);
   cron.schedule("0 0 * * *", () => {
     logger.info("Running main loop");
     reload.run(["reload"], spotifyApi);

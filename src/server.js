@@ -48,12 +48,7 @@ function Server(spotifyApi, authorizedCallback) {
         );
         res.send("Success! You can now close this window");
         server.close(); // don't need express anymore
-        setInterval(async () => {
-          const data = await spotifyApi.refreshAccessToken();
-          logger.info("The access token has been refreshed");
-          spotifyApi.setAccessToken(data.body["access_token"]);
-        }, (expires_in / 2) * 1000);
-        authorizedCallback();
+        authorizedCallback(expires_in);
       })
       .catch((err) => {
         logger.error("Authorization error:", err);
