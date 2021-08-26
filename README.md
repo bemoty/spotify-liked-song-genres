@@ -40,11 +40,11 @@ P.S.: Documentation for Docker coming soon (or so)
 
 I also added some utility commands.
 
-| Command         | Description                                                                                                                            |
-| --------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `reload`        | runs the main job of the application (refetching liked songs, populating playlists)                                                    |
-| `mmap`          | retrieves all liked songs and checks if there are any artists which can't be put in any playlists because their genres have no mapping |
-| `ga [artistId]` | retrieves the genres of an artist (takes 1 argument: the artist ID)                                                                    |
+| Command           | Description                                                                                                                            |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `reload`          | runs the main job of the application (refetching liked songs, populating playlists)                                                    |
+| `check`           | retrieves all liked songs and checks if there are any artists which can't be put in any playlists because their genres have no mapping |
+| `info [artistId]` | retrieves the genres of an artist (takes 1 argument: the artist ID)                                                                    |
 
 ## Finishing words
 
