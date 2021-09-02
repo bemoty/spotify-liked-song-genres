@@ -1,7 +1,6 @@
 const config = require("config-uncached");
 const log4js = require("log4js");
 const util = require("../util");
-let spotify = require("../spotify");
 
 async function reloadCommand(_, spotifyApi) {
   const logger = log4js.getLogger("ReloadCommand");
@@ -9,7 +8,7 @@ async function reloadCommand(_, spotifyApi) {
     logger.error("Illegal arguments, usage: reload");
     return;
   }
-  spotify = spotify(spotifyApi);
+  const spotify = require("../spotify")(spotifyApi);
   const data = await spotify.getSavedTracks();
   logger.info(`Successfully loaded ${data.length} songs`);
   await spotify.decorateArtistGenres(data);
