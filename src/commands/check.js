@@ -1,6 +1,6 @@
 const config = require("config-uncached");
 const log4js = require("log4js");
-let spotify = require("../spotify");
+const spotify = require("../spotify");
 
 async function checkCommand(_, spotifyApi) {
   const logger = log4js.getLogger("CheckCommand");
@@ -8,10 +8,10 @@ async function checkCommand(_, spotifyApi) {
     logger.error("Illegal arguments, usage: check");
     return;
   }
-  spotify = spotify(spotifyApi);
-  const data = await spotify.getSavedTracks();
+  const spotifyObj = spotify(spotifyApi);
+  const data = await spotifyObj.getSavedTracks();
   logger.info(`Successfully loaded ${data.length} songs`);
-  const artistData = await spotify.getArtistsForTracks(data);
+  const artistData = await spotifyObj.getArtistsForTracks(data);
   logger.info("Loaded artist info, calculating missing genre mappings");
   const genres = config(true)
     .get("spotify.playlists")
