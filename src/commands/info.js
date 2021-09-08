@@ -6,7 +6,9 @@ async function infoCommand(args, spotifyApi) {
     logger.error("Illegal arguments, usage: info <artist ID>");
     return;
   }
-  const artist = args[1];
+  const artist = args[1].startsWith("https://")
+    ? args[1].split("/")[4].split("?")[0]
+    : args[1];
   try {
     const data = await spotifyApi.getArtist(artist);
     logger.info(
