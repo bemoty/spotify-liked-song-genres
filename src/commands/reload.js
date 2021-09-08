@@ -43,6 +43,9 @@ async function reloadCommand(_, spotifyApi) {
         (t) => t.genres.filter((v) => playlist.ngenres.includes(v)).length === 0
       );
     }
+    tracks.sort((a, b) =>
+      a.track.artists[0].name.localeCompare(b.track.artists[0].name)
+    );
     const chunkSize = 100;
     const splitTracks = util.splitChunk(tracks, chunkSize);
     let part = 0;
