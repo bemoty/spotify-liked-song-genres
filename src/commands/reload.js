@@ -10,9 +10,17 @@ async function reloadCommand(_, spotifyApi) {
     return;
   }
   const spotifyObj = spotify(spotifyApi);
-  const data = await spotifyObj.getSavedTracks();
-  logger.info(`Successfully loaded ${data.length} songs`);
-  await spotifyObj.decorateArtistGenres(data);
+  let data;
+  try {
+    data = await spotifyObj.getSavedTracks();
+    logger.info(`Successfully loaded ${data.length} songs`);
+    await spotifyObj.decorateArtistGenres(data);
+  } catch (error) {
+    logger.error(
+      `Failed to execute ReloadCommand, is the SpotifyAPI down? ` + error
+    );
+    return;
+  }
   logger.info(
     `Populating ${config(true).get("spotify.playlists").length} playlist(s)`
   );
@@ -20,13 +28,20 @@ async function reloadCommand(_, spotifyApi) {
     logger.info(`Populating playlist '${playlist.name}'`);
     const p = await spotifyApi.getPlaylist(playlist.id);
     if (p.body.tracks.total > 0) {
-      await spotifyApi.removeTracksFromPlaylistByPosition(
-        playlist.id,
-        Array(p.body.tracks.total)
-          .fill()
-          .map((_, i) => i),
-        p.body.snapshot_id
-      );
+      try {
+        await spotifyApi.removeTracksFromPlaylistByPosition(
+          playlist.id,
+          Array(p.body.tracks.total)
+            .fill()
+            .map((_, i) => i),
+          p.body.snapshot_id
+        );
+      } catch (error) {
+        logger.error(
+          `Failed to execute ReloadCommand, is the SpotifyAPI down? ` + error
+        );
+        return;
+      }
     }
     if (playlist.aoverride) {
       for (let track of data) {
@@ -47,17 +62,24 @@ async function reloadCommand(_, spotifyApi) {
       if (a.track.artists[0].name === b.track.artists[0].name) {
         return a.track.album.name.localeCompare(b.track.album.name);
       }
-      return a.track.artists[0].name.localeCompare(b.track.artists[0].name)
+      return a.track.artists[0].name.localeCompare(b.track.artists[0].name);
     });
     const chunkSize = 100;
     const splitTracks = util.splitChunk(tracks, chunkSize);
     let part = 0;
     for (let split of splitTracks) {
       logger.info(`Populating chunk ${part}-${part + chunkSize}...`);
-      await spotifyApi.addTracksToPlaylist(
-        playlist.id,
-        split.map((t) => t.track.uri)
-      );
+      try {
+        await spotifyApi.addTracksToPlaylist(
+          playlist.id,
+          split.map((t) => t.track.uri)
+        );
+      } catch (error) {
+        logger.error(
+          `Failed to execute ReloadCommand, is the SpotifyAPI down? ` + error
+        );
+        return;
+      }
       part += chunkSize;
     }
   }

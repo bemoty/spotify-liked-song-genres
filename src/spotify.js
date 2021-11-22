@@ -22,6 +22,7 @@ const spotify = (spotifyApi) => {
       }
       return artistData;
     },
+
     async decorateArtistGenres(tracks) {
       logger.info("Loading artist genre information...");
       const artistData = await this.getArtistsForTracks(tracks);
@@ -32,6 +33,7 @@ const spotify = (spotifyApi) => {
       }
       logger.info("Successfully loaded artist / genre data");
     },
+
     async getSavedTracks(offset = 0) {
       var data = await spotifyApi.getMySavedTracks({
         offset: offset,

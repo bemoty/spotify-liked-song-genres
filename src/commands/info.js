@@ -17,7 +17,7 @@ async function infoCommand(args, spotifyApi) {
       }`
     );
   } catch (_) {
-    logger.error("This artist does not exist");
+    logger.error("Could not retrieve artist, either the artist does not exist or the API is down");
   }
 }
 

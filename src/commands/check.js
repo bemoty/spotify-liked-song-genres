@@ -9,10 +9,18 @@ async function checkCommand(_, spotifyApi) {
     return;
   }
   const spotifyObj = spotify(spotifyApi);
-  const data = await spotifyObj.getSavedTracks();
-  logger.info(`Successfully loaded ${data.length} songs`);
-  const artistData = await spotifyObj.getArtistsForTracks(data);
-  logger.info("Loaded artist info, calculating missing genre mappings");
+  let artistData;
+  try {
+    const data = await spotifyObj.getSavedTracks();
+    logger.info(`Successfully loaded ${data.length} songs`);
+    artistData = await spotifyObj.getArtistsForTracks(data);
+    logger.info("Loaded artist info, calculating missing genre mappings");
+  } catch (error) {
+    logger.error(
+      `Failed to execute CheckCommand, is the SpotifyAPI down? ` + error
+    );
+    return;
+  }
   const genres = config(true)
     .get("spotify.playlists")
     .map((p) => p.genres)
