@@ -45,7 +45,7 @@ I also added some utility commands.
 | `reload`          | runs the main job of the application (refetching liked songs, populating playlists)                                                    |
 | `check`           | retrieves all liked songs and checks if there are any artists which can't be put in any playlists because their genres have no mapping |
 | `info [artistId]` | retrieves the genres of an artist (takes 1 argument: the artist ID)                                                                    |
-| `genres` | retrieves the genres of all artists and exports them into a CSV file                                                                    |
+| `genres`          | retrieves the genres of all artists and exports them into a CSV file                                                                   |
 
 ## By the way...
 

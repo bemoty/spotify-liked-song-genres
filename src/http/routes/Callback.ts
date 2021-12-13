@@ -6,7 +6,7 @@ export default class Callback extends Route {
   constructor(
     private readonly spotify: Spotify,
     private readonly stateKey: string,
-    private readonly callback: () => void
+    private readonly callback: () => void,
   ) {
     super()
     this.router.get('/callback', (req, res) => this.handle(req, res))
@@ -55,10 +55,10 @@ export default class Callback extends Route {
           message:
             'Successfully connected to Spotify. You can close this window',
         })
-        this.callback(); // Shut down express as it is no longer needed
+        this.callback() // Shut down express as it is no longer needed
       })
       .catch((error) => {
-        const message = error.message;
+        const message = error.message
         this.logger.error('Auth Code Flow Grant failed:', message)
         res.send({
           success: false,
