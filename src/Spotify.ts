@@ -19,6 +19,9 @@ interface SpotifyPlaylistConfig {
   aoverride: string[]
 }
 
+/**
+ * This is a wrapper class for the Spotify API
+ */
 export default class Spotify {
   public webApi: SpotifyWebApi
   private logger: log4js.Logger
@@ -33,6 +36,13 @@ export default class Spotify {
     this.logger = log4js.getLogger('Spotify')
   }
 
+  /**
+   * Retrieves the artists of an array of Spotify tracks
+   *
+   * @param tracks an array of Spotify tracks of which the artists are toe be
+   * retrieved
+   * @returns an array of artists generated from the provided tracks
+   */
   async getArtistsForTracks(
     tracks: SpotifyApi.SavedTrackObject[],
   ): Promise<SpotifyApi.ArtistObjectFull[]> {
@@ -54,6 +64,12 @@ export default class Spotify {
     return artistData
   }
 
+  /**
+   * Adds the artist genre to an array of tracks
+   *
+   * @param tracks an array of Spotify tracks
+   * @returns an array of Spotify tracks with a genre
+   */
   async decorateArtistGenres(
     tracks: SpotifyApi.SavedTrackObject[],
   ): Promise<DecoratedSavedTrackObject[]> {
@@ -69,6 +85,13 @@ export default class Spotify {
     return decoratedTracks
   }
 
+  /**
+   * Recursively retrieves all liked songs in the library of the connected Spotify
+   * user
+   *
+   * @param offset the current request offset (0 at the first recursive call)
+   * @returns an array of tracks stored in the user's liked songs
+   */
   async getSavedTracks(offset = 0): Promise<SpotifyApi.SavedTrackObject[]> {
     const data = await this.webApi.getMySavedTracks({
       offset: offset,
