@@ -2,7 +2,7 @@ import Command from '../Command'
 
 export default class Check extends Command {
   async execute(args: string[]): Promise<void> {
-    if (args.length != 1) {
+    if (args.length != 0) {
       this.logger.error('Illegal arguments, usage: check')
       return
     }

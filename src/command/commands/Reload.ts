@@ -4,7 +4,7 @@ import Command from '../Command'
 
 export default class Reload extends Command {
   async execute(args: string[]): Promise<void> {
-    if (args.length != 1) {
+    if (args.length != 0) {
       this.logger.error('Illegal arguments, usage: reload')
       return
     }

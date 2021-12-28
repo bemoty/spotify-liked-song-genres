@@ -2,13 +2,13 @@ import Command from '../Command'
 
 export default class Info extends Command {
   async execute(args: string[]): Promise<void> {
-    if (args.length != 2) {
+    if (args.length != 1) {
       this.logger.error('Illegal arguments, usage: info <artist ID>')
       return
     }
-    const artist = args[1].startsWith('https://')
-      ? args[1].split('/')[4].split('?')[0]
-      : args[1]
+    const artist = args[0].startsWith('https://')
+      ? args[0].split('/')[4].split('?')[0]
+      : args[0]
     try {
       const data = await this.spotify.webApi.getArtist(artist)
       this.logger.info(

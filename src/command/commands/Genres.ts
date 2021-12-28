@@ -3,7 +3,7 @@ import Command from '../Command'
 
 export default class Genres extends Command {
   async execute(args: string[]): Promise<void> {
-    if (args.length != 1) {
+    if (args.length != 0) {
       this.logger.error('Illegal arguments, usage: genres')
       return
     }

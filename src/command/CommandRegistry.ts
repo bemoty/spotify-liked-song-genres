@@ -40,7 +40,7 @@ export default class CommandRegistry {
       let executed = false
       for (let commandEntry of this.commandEntries) {
         if (input.startsWith(commandEntry.name)) {
-          commandEntry.command.execute(input.split(' '))
+          commandEntry.command.execute(input.split(' ').slice(1))
           executed = true
           break
         }
