@@ -162,7 +162,7 @@ export default class Spotify {
     this.webApi.setAccessToken(data.body.access_token)
     this.tokenCacheManager.storeTokens({
       accessToken: data.body.access_token,
-      refreshToken: this.tokenCacheManager.tokens?.refreshToken as string,
+      refreshToken: data.body.refresh_token ?? this.tokenCacheManager.tokens?.refreshToken as string,
     })
     this.logger.info('Access token has been refreshed')
   }
