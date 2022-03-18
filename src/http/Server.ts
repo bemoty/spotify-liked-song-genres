@@ -2,15 +2,11 @@ import cookieParser from 'cookie-parser'
 import express, { Express } from 'express'
 import http from 'http'
 import log4js from 'log4js'
+import { ServerConfig } from '../config'
 import Spotify from '../Spotify'
 import Route from './Route'
 import Callback from './routes/Callback'
 import Login from './routes/Login'
-
-interface ServerConfig {
-  port: number
-  host: string
-}
 
 interface RouteEntry {
   basePath: string

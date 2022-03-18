@@ -138,4 +138,5 @@ dist
 .ionide
 
 # Additional
-config/production.json
+config/default.json
+tokens.json

@@ -1,23 +1,9 @@
 import log4js from 'log4js'
 import SpotifyWebApi from 'spotify-web-api-node'
+import { SpotifyConfig } from './config'
+import { TokenCacheManager } from './TokenCacheManager'
 import DecoratedSavedTrackObject from './types/DecoratedSavedTrackObject'
 import Util from './Util'
-
-interface SpotifyConfig {
-  client_id: string
-  client_secret: string
-  redirect_uri: string
-  scopes: string[]
-  playlists: SpotifyPlaylistConfig[]
-}
-
-interface SpotifyPlaylistConfig {
-  id: string
-  name: string
-  genres: string[]
-  ngenres: string[]
-  aoverride: string[]
-}
 
 /**
  * This is a wrapper class for the Spotify API
@@ -27,13 +13,30 @@ export default class Spotify {
   private logger: log4js.Logger
   private authorized = false
 
-  constructor(public readonly config: SpotifyConfig) {
-    this.webApi = new SpotifyWebApi({
-      clientId: config.client_id,
-      clientSecret: config.client_secret,
-      redirectUri: config.redirect_uri,
-    })
+  constructor(
+    public readonly config: SpotifyConfig,
+    private tokenCacheManager: TokenCacheManager,
+  ) {
     this.logger = log4js.getLogger('Spotify')
+    if (
+      tokenCacheManager.tokens?.accessToken &&
+      tokenCacheManager.tokens?.refreshToken
+    ) {
+      this.webApi = new SpotifyWebApi({
+        accessToken: tokenCacheManager.tokens.accessToken,
+        refreshToken: tokenCacheManager.tokens.refreshToken,
+      })
+      this.logger.info('Initialized Spotify API with cached access token')
+    } else {
+      this.webApi = new SpotifyWebApi({
+        clientId: config.client_id,
+        clientSecret: config.client_secret,
+        redirectUri: config.redirect_uri,
+      })
+      this.logger.info(
+        'Initialized Spotify API with client ID and client secret',
+      )
+    }
   }
 
   /**
@@ -144,13 +147,23 @@ export default class Spotify {
     this.authorized = true
     this.webApi.setAccessToken(accessToken)
     this.webApi.setRefreshToken(refreshToken)
+    this.tokenCacheManager.storeTokens({
+      accessToken,
+      refreshToken,
+    })
     this.logger.info(
       `Successfully retrieved access token, will expire in ${expiresIn}`,
     )
-    setInterval(async () => {
-      const data = await this.webApi.refreshAccessToken()
-      this.webApi.setAccessToken(data.body['access_token'])
-      this.logger.info('Access token has been refreshed')
-    }, (expiresIn / 2) * 1000)
+    setInterval(() => this.refreshTokenTask(), (expiresIn / 2) * 1000)
+  }
+
+  private async refreshTokenTask() {
+    const data = await this.webApi.refreshAccessToken()
+    this.webApi.setAccessToken(data.body.access_token)
+    this.tokenCacheManager.storeTokens({
+      accessToken: data.body.access_token,
+      refreshToken: this.tokenCacheManager.tokens?.refreshToken as string,
+    })
+    this.logger.info('Access token has been refreshed')
   }
 }

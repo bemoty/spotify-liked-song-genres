@@ -3,6 +3,7 @@
     "client_id": "",
     "client_secret": "",
     "redirect_uri": "http://localhost:8080/callback",
+    "token_cache_path": "/home/app/tokens.json",
     "scopes": [
       "user-read-email",
       "user-read-private",
