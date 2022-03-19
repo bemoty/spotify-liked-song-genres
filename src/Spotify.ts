@@ -154,7 +154,7 @@ export default class Spotify {
     this.logger.info(
       `Successfully retrieved access token, will expire in ${expiresIn}`,
     )
-    setInterval(() => this.refreshTokenTask(), (expiresIn / 2) * 1000)
+    setInterval(async () => await this.refreshTokenTask(), (expiresIn / 2) * 1000)
   }
 
   private async refreshTokenTask() {
