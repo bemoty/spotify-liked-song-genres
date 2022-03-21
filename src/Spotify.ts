@@ -27,6 +27,7 @@ export default class Spotify {
         refreshToken: tokenCacheManager.tokens.refreshToken,
       })
       this.logger.info('Initialized Spotify API with cached access token')
+      setInterval(async () => await this.refreshTokenTask(), 60 * 60 * 1000)
     } else {
       this.webApi = new SpotifyWebApi({
         clientId: config.client_id,
@@ -154,7 +155,10 @@ export default class Spotify {
     this.logger.info(
       `Successfully retrieved access token, will expire in ${expiresIn}`,
     )
-    setInterval(async () => await this.refreshTokenTask(), (expiresIn / 2) * 1000)
+    setInterval(
+      async () => await this.refreshTokenTask(),
+      (expiresIn / 2) * 1000,
+    )
   }
 
   private async refreshTokenTask() {
@@ -162,7 +166,9 @@ export default class Spotify {
     this.webApi.setAccessToken(data.body.access_token)
     this.tokenCacheManager.storeTokens({
       accessToken: data.body.access_token,
-      refreshToken: data.body.refresh_token ?? this.tokenCacheManager.tokens?.refreshToken as string,
+      refreshToken:
+        data.body.refresh_token ??
+        (this.tokenCacheManager.tokens?.refreshToken as string),
     })
     this.logger.info('Access token has been refreshed')
   }
