@@ -11,7 +11,7 @@ This application retrieves the "Liked Songs" of a linked Spotify account once ev
 Clone the repository, install the repository and copy the default configuration.
 
 ```shell
-git clone https://github.com/bemoty/spotify-liked-song-genres && cd spotify-lined-song-genres && npm install && cp .config/default.json .config/production.json
+git clone https://github.com/bemoty/spotify-liked-song-genres && cd spotify-liked-song-genres && npm install && cp .config/default.json .config/production.json
 ```
 
 Then, insert the credentials for your Spotify application created in the [Spotify dev dashboard](https://developer.spotify.com/dashboard/applications).
