@@ -1,7 +1,9 @@
-FROM node:alpine
-LABEL dev.bemoty.spotify-liked-song-genres.authors="josh@bemoty.dev"
+FROM node:16-alpine
 WORKDIR /home/app/
+COPY yarn.lock package.json ./
+RUN yarn install
+
 COPY . .
-RUN npm install
-RUN npm run build
+RUN yarn build
+EXPOSE 8080
 CMD [ "node", "dist/App.js" ]

@@ -39,6 +39,7 @@ export class TokenCacheManager {
       )
     } catch (err) {
       this.logger.warn(`No tokens cached: ${err}`)
+      this._tokens = Object.create(null)
     }
     return false
   }
@@ -48,30 +49,26 @@ export class TokenCacheManager {
    * @param tokenCache the TokenCache to be written to the file system
    */
   public async storeTokens(tokenCache: TokenCache): Promise<void> {
-    await new Promise((resolve, reject) => {
-      fs.writeFile(
-        this.tokenCachePath,
-        JSON.stringify(tokenCache),
-        'utf8',
-        (err) => {
-          if (err) {
-            reject(err)
-            return
-          }
-          this._tokens = tokenCache
-          this.logger.info('Successfully cached access and refresh tokens')
-          resolve(null)
-        },
-      )
-    })
+    fs.writeFile(
+      this.tokenCachePath,
+      JSON.stringify(tokenCache),
+      'utf8',
+      (err) => {
+        if (err) {
+          throw err
+        }
+        this._tokens = tokenCache
+        this.logger.info('Successfully cached access and refresh tokens')
+      },
+    )
   }
 
   /**
    * Reads the TokenCache from the file system
    * @returns the read TokenCache
    */
-  public async readTokens(): Promise<TokenCache> {
-    return await new Promise((resolve, reject) => {
+  public readTokens(): Promise<TokenCache> {
+    return new Promise((resolve, reject) => {
       fs.readFile(this.tokenCachePath, 'utf8', (err, data) => {
         if (err) {
           reject(err)
@@ -80,6 +77,9 @@ export class TokenCacheManager {
         try {
           const jsonData = JSON.parse(data)
           this._tokens = jsonData
+          if (!this._tokens?.expires || this._tokens.expires < Date.now()) {
+            reject(new Error('Token expired'))
+          }
           resolve(jsonData)
         } catch (parseErr) {
           reject(parseErr)
