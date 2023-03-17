@@ -1,6 +1,6 @@
+import Spotify from '@/Spotify'
+import Route from '@http/Route'
 import { Request, Response } from 'express'
-import Spotify from '../../Spotify'
-import Route from '../Route'
 
 export default class Login extends Route {
   constructor(

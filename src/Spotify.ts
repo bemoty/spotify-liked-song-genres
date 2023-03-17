@@ -1,9 +1,9 @@
+import { TokenCacheManager } from '@/TokenCacheManager'
+import Util from '@/Util'
+import { SpotifyConfig } from '@config/index'
+import DecoratedSavedTrackObject from '@typings/DecoratedSavedTrackObject'
 import log4js from 'log4js'
 import SpotifyWebApi from 'spotify-web-api-node'
-import { SpotifyConfig } from './config'
-import { TokenCacheManager } from './TokenCacheManager'
-import DecoratedSavedTrackObject from './types/DecoratedSavedTrackObject'
-import Util from './Util'
 
 /**
  * This is a wrapper class for the Spotify API
@@ -43,7 +43,7 @@ export default class Spotify {
   /**
    * Retrieves the artists of an array of Spotify tracks
    *
-   * @param tracks an array of Spotify tracks of which the artists are toe be
+   * @param tracks an array of Spotify tracks of which the artists are to be
    * retrieved
    * @returns an array of artists generated from the provided tracks
    */
@@ -62,30 +62,85 @@ export default class Spotify {
           artistData.length + chunkSize
         }...`,
       )
-      const ad = await this.webApi.getArtists(chunk)
-      artistData.push(...ad.body.artists)
+      try {
+        const ad = await this.webApi.getArtists(chunk)
+        artistData.push(...ad.body.artists)
+      } catch (error) {
+        this.logger.warn(
+          `Web API error occurred while loading artist data in chunk ${
+            artistData.length
+          }-${artistData.length + chunkSize}`,
+        )
+        this.logger.warn(error)
+      }
     }
     return artistData
   }
 
   /**
-   * Adds the artist genre to an array of tracks
+   * Retrieves the audio features of an array of Spotify tracks
+   *
+   * @param tracks an array of Spotify tracks of which the audio features are to be
+   * retrieved
+   * @returns an array of audio features generated from the provided tracks
+   */
+  async getAudioFeaturesForTracks(
+    tracks: SpotifyApi.SavedTrackObject[],
+  ): Promise<SpotifyApi.AudioFeaturesObject[]> {
+    const chunkSize = 50
+    const chunks = Util.splitChunk(tracks, chunkSize)
+    let audioFeatureData = [] as SpotifyApi.AudioFeaturesObject[]
+    for (let chunk of chunks) {
+      this.logger.info(
+        `Loading audio feature chunk ${audioFeatureData.length}-${
+          audioFeatureData.length + chunkSize
+        }...`,
+      )
+      try {
+        const audioFeatures = await this.webApi.getAudioFeaturesForTracks(
+          chunk.map((track) => track.track.id),
+        )
+        audioFeatureData.push(...audioFeatures.body.audio_features)
+      } catch (error) {
+        this.logger.warn(
+          `Web API error occurred while loading audio features data in chunk ${
+            audioFeatureData.length
+          }-${audioFeatureData.length + chunkSize}`,
+        )
+        this.logger.warn(error)
+      }
+    }
+    return audioFeatureData
+  }
+
+  /**
+   * Adds the artist genre and the audio features to an array of tracks
    *
    * @param tracks an array of Spotify tracks
    * @returns an array of Spotify tracks with a genre
    */
-  async decorateArtistGenres(
+  async decorateTracks(
     tracks: SpotifyApi.SavedTrackObject[],
   ): Promise<DecoratedSavedTrackObject[]> {
     this.logger.info('Loading artist genre information...')
     const decoratedTracks = [...tracks] as DecoratedSavedTrackObject[]
-    const artistData = await this.getArtistsForTracks(tracks)
-    for (let i = 0; i < tracks.length; i++) {
-      const artistId = tracks[i].track.artists[0].id
-      const data = artistData.filter((a) => a.id === artistId)
-      decoratedTracks[i].genres = data[0].genres
+    const artistsOfTracks = await this.getArtistsForTracks(tracks)
+    const audioFeatures = await this.getAudioFeaturesForTracks(tracks)
+    console.log(audioFeatures)
+    console.log(decoratedTracks.length)
+    for (let i = 0; i < decoratedTracks.length; i++) {
+      const artistId = decoratedTracks[i].track.artists[0].id
+      const artistData = artistsOfTracks.find((a) => a.id === artistId)
+      const audioFeature = audioFeatures.find(
+        (a) => a.id === decoratedTracks[i].track.id,
+      )
+      decoratedTracks[i].genres = artistData?.genres
+      decoratedTracks[i].audioFeatures = audioFeature
+      console.log(audioFeature)
     }
-    this.logger.info('Successfully loaded artist / genre data')
+    this.logger.info(
+      'Successfully loaded artist / genre and audio feature data',
+    )
     return decoratedTracks
   }
 

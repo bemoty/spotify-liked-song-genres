@@ -1,4 +1,4 @@
-import Command from '../Command'
+import Command from '@command/Command'
 
 export default class Info extends Command {
   async execute(args: string[]): Promise<void> {

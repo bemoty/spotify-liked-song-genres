@@ -1,4 +1,4 @@
-import Command from '../Command'
+import Command from '@command/Command'
 
 export default class Check extends Command {
   async execute(args: string[]): Promise<void> {
@@ -22,9 +22,7 @@ export default class Check extends Command {
     let martists = artistData.filter(
       (a) => a.genres.filter((g) => genres.includes(g)).length === 0,
     )
-    const overrides = this.spotify.config.playlists
-      .map((p) => p.aoverride)
-      .flat()
+    const overrides = this.spotify.config.playlists.map((p) => p.artists).flat()
     if (overrides.length !== 0) {
       martists = martists.filter((a) => !overrides.includes(a.name))
     }

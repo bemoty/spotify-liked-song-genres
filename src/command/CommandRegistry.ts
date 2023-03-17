@@ -1,11 +1,11 @@
+import Command from '@command/Command'
+import Check from '@commands/Check'
+import Genres from '@commands/Genres'
+import Info from '@commands/Info'
+import Reload from '@commands/Reload'
 import log4js from 'log4js'
 import { Interface } from 'readline'
-import Spotify from '../Spotify'
-import Command from './Command'
-import Check from './commands/Check'
-import Genres from './commands/Genres'
-import Info from './commands/Info'
-import Reload from './commands/Reload'
+import Spotify from '@/Spotify'
 
 interface CommandEntry {
   name: string
@@ -14,24 +14,7 @@ interface CommandEntry {
 
 export default class CommandRegistry {
   private logger: log4js.Logger
-  public readonly commandEntries: CommandEntry[] = [
-    {
-      name: 'reload',
-      command: new Reload(this.spotify),
-    },
-    {
-      name: 'check',
-      command: new Check(this.spotify),
-    },
-    {
-      name: 'info',
-      command: new Info(this.spotify),
-    },
-    {
-      name: 'genres',
-      command: new Genres(this.spotify),
-    },
-  ]
+  public readonly commandEntries: CommandEntry[] = []
 
   constructor(private readonly spotify: Spotify, commandInterface: Interface) {
     this.logger = log4js.getLogger('CommandRegistry')
@@ -49,6 +32,24 @@ export default class CommandRegistry {
         this.logger.error('Unknown command')
       }
     })
+    this.commandEntries = [
+      {
+        name: 'reload',
+        command: new Reload(this.spotify),
+      },
+      {
+        name: 'check',
+        command: new Check(this.spotify),
+      },
+      {
+        name: 'info',
+        command: new Info(this.spotify),
+      },
+      {
+        name: 'genres',
+        command: new Genres(this.spotify),
+      },
+    ]
   }
 
   getCommand(name: string): Command | undefined {

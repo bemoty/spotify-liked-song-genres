@@ -1,6 +1,7 @@
-import DecoratedSavedTrackObject from '../../types/DecoratedSavedTrackObject'
-import Util from '../../Util'
-import Command from '../Command'
+import Util from '@/Util'
+import Command from '@command/Command'
+import { SpotifyPlaylistConfig } from '@config/index'
+import { DecoratedSavedTrackObject } from '@typings/index'
 
 export default class Reload extends Command {
   async execute(args: string[]): Promise<void> {
@@ -13,11 +14,12 @@ export default class Reload extends Command {
     try {
       tracks = await this.spotify.getSavedTracks()
       this.logger.info(`Successfully loaded ${tracks.length} songs`)
-      decoratedTracks = await this.spotify.decorateArtistGenres(tracks)
+      decoratedTracks = await this.spotify.decorateTracks(tracks)
     } catch (error) {
       this.logger.error(
-        `Failed to execute ReloadCommand, is the SpotifyAPI down? ` + error,
+        `Failed to execute ReloadCommand, is the SpotifyAPI down?`,
       )
+      this.logger.error(error)
       return
     }
     this.logger.info(
@@ -25,45 +27,51 @@ export default class Reload extends Command {
     )
     for (let playlist of this.spotify.config.playlists) {
       this.logger.info(`Populating playlist '${playlist.name}'`)
-      const p = await this.spotify.webApi.getPlaylist(playlist.id)
-      if (p.body.tracks.total > 0) {
-        try {
-          await this.spotify.webApi.removeTracksFromPlaylistByPosition(
-            playlist.id,
-            Array(p.body.tracks.total)
-              .fill(0)
-              .map((_, i) => i),
-            p.body.snapshot_id,
+      const spotifyPlaylist = await this.spotify.webApi.getPlaylist(playlist.id)
+
+      await this.clearPlaylist(spotifyPlaylist.body)
+
+      let filteredTracks = playlist.genres.includes('*')
+        ? decoratedTracks
+        : decoratedTracks.filter(
+            (t) =>
+              (t.genres ?? []).filter((v) => playlist.genres.includes(v))
+                .length !== 0,
           )
-        } catch (error) {
-          this.logger.error(
-            `Failed to execute ReloadCommand, is the SpotifyAPI down? ` + error,
-          )
-          return
-        }
-      }
-      if (playlist.aoverride) {
-        for (let track of decoratedTracks) {
-          if (playlist.aoverride.includes(track.track.artists[0].name)) {
-            track.genres.push(playlist.genres[0])
-          }
-        }
-      }
-      let filteredTracks = decoratedTracks.filter(
-        (t) => t.genres.filter((v) => playlist.genres.includes(v)).length !== 0,
-      )
-      if (playlist.ngenres) {
+      // add the artists on top of the filtered genres
+      filteredTracks = [
+        ...new Set(
+          filteredTracks.concat(
+            await this.handleArtists(playlist, decoratedTracks),
+          ),
+        ),
+      ]
+
+      if (playlist.ignoredGenres) {
         filteredTracks = filteredTracks.filter(
           (t) =>
-            t.genres.filter((v) => playlist.ngenres.includes(v)).length === 0,
+            (t.genres ?? []).filter((v) =>
+              (playlist.ignoredGenres ?? []).includes(v),
+            ).length === 0,
         )
       }
+
+      if (playlist.energyRange) {
+        filteredTracks = filteredTracks.filter(
+          (t) =>
+            t.audioFeatures &&
+            t.audioFeatures?.energy >= playlist.energyRange!.minEnergy &&
+            t.audioFeatures?.energy <= playlist.energyRange!.maxEnergy,
+        )
+      }
+
       filteredTracks.sort((a, b) => {
         if (a.track.artists[0].name === b.track.artists[0].name) {
           return a.track.album.name.localeCompare(b.track.album.name)
         }
         return a.track.artists[0].name.localeCompare(b.track.artists[0].name)
       })
+
       const chunkSize = 100
       const splitTracks = Util.splitChunk(filteredTracks, chunkSize)
       let part = 0
@@ -76,13 +84,51 @@ export default class Reload extends Command {
           )
         } catch (error) {
           this.logger.error(
-            `Failed to execute ReloadCommand, is the SpotifyAPI down? ` + error,
+            `Failed to execute ReloadCommand, is the SpotifyAPI down?`,
           )
+          this.logger.error(error)
           return
         }
         part += chunkSize
       }
     }
     this.logger.info('Successfully completed main loop')
+  }
+
+  private async clearPlaylist(
+    spotifyPlaylist: SpotifyApi.SinglePlaylistResponse,
+  ) {
+    if (spotifyPlaylist.tracks.total === 0) {
+      return
+    }
+    try {
+      await this.spotify.webApi.removeTracksFromPlaylistByPosition(
+        spotifyPlaylist.id,
+        Array(spotifyPlaylist.tracks.total)
+          .fill(0)
+          .map((_, i) => i),
+        spotifyPlaylist.snapshot_id,
+      )
+    } catch (error) {
+      this.logger.error(
+        `Failed to execute ReloadCommand, is the SpotifyAPI down?`,
+      )
+      this.logger.error(error)
+      return
+    }
+  }
+
+  private async handleArtists(
+    playlist: SpotifyPlaylistConfig,
+    decoratedTracks: DecoratedSavedTrackObject[],
+  ) {
+    if (!playlist.artists) {
+      return decoratedTracks
+    }
+    return decoratedTracks.filter((track) =>
+      track.track.artists.some((artist) =>
+        playlist.artists?.includes(artist.name),
+      ),
+    )
   }
 }

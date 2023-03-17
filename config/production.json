@@ -59,7 +59,7 @@
           "ghanaian hip hop",
           "k-rap"
         ],
-        "ngenres": [
+        "ignoredGenres": [
           "complextro",
           "edm",
           "electro house",
@@ -90,7 +90,7 @@
           "nu metal",
           "neo soul"
         ],
-        "aoverride": [
+        "artists": [
           "ELIOZIE",
           "THE SCOTTS",
           "Honey Claws",
@@ -123,7 +123,7 @@
           "hamburg hip hop",
           "austrian hip hop"
         ],
-        "aoverride": [
+        "artists": [
           "Cheriimoya",
           "Kuqler",
           "KKKONI",
@@ -160,7 +160,7 @@
           "german rock",
           "australian garage punk"
         ],
-        "ngenres": ["classic rock", "baroque rock"]
+        "ignoredGenres": ["classic rock", "baroque rock"]
       },
       {
         "id": "0bXboQnWH4GMItyA800KH3",
@@ -206,8 +206,8 @@
           "house",
           "video game music"
         ],
-        "ngenres": ["alt z", "europop", "eurodance"],
-        "aoverride": [
+        "ignoredGenres": ["alt z", "europop", "eurodance"],
+        "artists": [
           "Shelco Garcia & Teenwolf",
           "Pbb Yea",
           "Cringe Records",
@@ -259,7 +259,7 @@
           "mellow gold",
           "soft rock"
         ],
-        "ngenres": [
+        "ignoredGenres": [
           "indie rock",
           "alternative metal",
           "g funk",
@@ -277,7 +277,7 @@
           "viral rap",
           "underground hip hop"
         ],
-        "aoverride": [
+        "artists": [
           "Wax",
           "Brandyn Burnette",
           "Camikaze",
@@ -330,7 +330,7 @@
           "british soul",
           "drift phonk"
         ],
-        "ngenres": [
+        "ignoredGenres": [
           "viral rap",
           "oakland hip hop",
           "canadian trap",
@@ -338,7 +338,7 @@
           "hip hop",
           "trap"
         ],
-        "aoverride": [
+        "artists": [
           "Max Pertl",
           "Canti",
           "Platos Dream",

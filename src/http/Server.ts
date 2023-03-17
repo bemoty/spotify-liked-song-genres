@@ -1,12 +1,12 @@
+import Spotify from '@/Spotify'
+import { ServerConfig } from '@config/index'
+import Route from '@http/Route'
+import Callback from '@http/routes/Callback'
+import Login from '@http/routes/Login'
 import cookieParser from 'cookie-parser'
 import express, { Express } from 'express'
 import http from 'http'
 import log4js from 'log4js'
-import { ServerConfig } from '../config'
-import Spotify from '../Spotify'
-import Route from './Route'
-import Callback from './routes/Callback'
-import Login from './routes/Login'
 
 interface RouteEntry {
   basePath: string
@@ -18,21 +18,22 @@ export default class Server {
   private readonly app: Express
   private readonly server: http.Server
   private readonly logger: log4js.Logger
-  private readonly routes: RouteEntry[] = [
-    {
-      basePath: '/',
-      handler: new Login(this.spotify, this.stateKey),
-    },
-    {
-      basePath: '/',
-      handler: new Callback(this.spotify, this.stateKey, () =>
-        this.destroyServer(),
-      ),
-    },
-  ]
+  private readonly routes: RouteEntry[] = []
 
   constructor(private spotify: Spotify, config: ServerConfig) {
     this.app = express()
+    this.routes = [
+      {
+        basePath: '/',
+        handler: new Login(this.spotify, this.stateKey),
+      },
+      {
+        basePath: '/',
+        handler: new Callback(this.spotify, this.stateKey, () =>
+          this.destroyServer(),
+        ),
+      },
+    ]
     this.logger = log4js.getLogger('Server')
     this.app.use(cookieParser())
     this.initializeRoutes()

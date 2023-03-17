@@ -24,17 +24,19 @@ Then, insert the credentials for your Spotify application created in the [Spotif
 
 And finally, create genre-specific playlists in your Spotify client, copy the playlist ID from the playlist URL and configure the `"playlists"` section of the config however you want. Quick documentation:
 
-| Field         | Description                                                                                                                                                                                           |
-| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `"id"`        | the ID of the playlist which can be found in the playlist URL (get it with Right click -> Share -> Copy link to playlist)                                                                             |
-| `"name"`      | the name of the playlist; doesn't have to be the same as in the client. This field is pretty much only used in the console log right now                                                              |
-| `"genres"`    | an array containing all genres which should be put into the playlist                                                                                                                                  |
-| `"ngenres"`   | an array containing all genres which should NOT under ANY CIRCUMSTANCES be put in the playlist (helpful if you want a rap playlist but don't want rap of a specific language to be in there)          |
-| `"aoverride"` | an array containing artist names which should be put in the playlist. Some artist on Spotify do not have a genre rating yet so you can manually assign artists without a genre rating with this field |
+| Field             | Description                                                                                                                                                                                           |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `"id"`            | the ID of the playlist which can be found in the playlist URL (get it with Right click -> Share -> Copy link to playlist)                                                                             |
+| `"name"`          | the name of the playlist; doesn't have to be the same as in the client. This field is pretty much only used in the console log right now                                                              |
+| `"genres"`        | an array containing all genres which should be put into the playlist                                                                                                                                  |
+| `"ignoredGenres"` | an array containing all genres which should NOT under ANY CIRCUMSTANCES be put in the playlist (helpful if you want a rap playlist but don't want rap of a specific language to be in there)          |
+| `"artists"`       | an array containing artist names which should be put in the playlist. Some artist on Spotify do not have a genre rating yet so you can manually assign artists without a genre rating with this field |
 
-Run the application with `npm run start` (preferrably in a terminal emulator such as [screen](https://linux.die.net/man/1/screen) or [tmux](https://www.man7.org/linux/man-pages/man1/tmux.1.html))
+Run the application with `yarn start` (preferrably in a terminal emulator such as [screen](https://linux.die.net/man/1/screen) or [tmux](https://www.man7.org/linux/man-pages/man1/tmux.1.html))
 
-P.S.: Documentation for Docker coming soon (or so)
+## Docker
+
+Todo ...
 
 ## Commands
 
@@ -50,10 +52,6 @@ I also added some utility commands.
 ## By the way...
 
 This was a quick afternoon project I made basically just for use by me. With that being said, I do not take any responsibility for anything this application does, such as your Spotify playlists getting messed up. Please only use this application if you know what you're doing.
-
-Also, everything in here is always subject to change. I might as well just go ahead and rewrite the entire application one day without warning.
-
-If you or anyone you know is actually using this and think it's helpful, I'd love to hear from you and your experience with my project on [Twitter](https://twitter.com/bemoty). :)
 
 ## License
 
