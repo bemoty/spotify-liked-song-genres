@@ -4,6 +4,7 @@ import log4js from 'log4js'
 export interface TokenCache {
   accessToken: string
   refreshToken: string
+  expires: number
 }
 
 export class TokenCacheManager {

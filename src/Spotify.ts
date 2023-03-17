@@ -151,6 +151,7 @@ export default class Spotify {
     this.tokenCacheManager.storeTokens({
       accessToken,
       refreshToken,
+      expires: new Date().getTime() + expiresIn * 1000,
     })
     this.logger.info(
       `Successfully retrieved access token, will expire in ${expiresIn}`,
@@ -169,6 +170,7 @@ export default class Spotify {
       refreshToken:
         data.body.refresh_token ??
         (this.tokenCacheManager.tokens?.refreshToken as string),
+      expires: new Date().getTime() + data.body.expires_in * 1000,
     })
     this.logger.info('Access token has been refreshed')
   }
