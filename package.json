@@ -28,7 +28,7 @@
   "dependencies": {
     "config": "^3.3.6",
     "cookie-parser": "^1.4.6",
-    "express": "^4.17.1",
+    "express": "^4.22.1",
     "log4js": "^6.3.0",
     "node-cron": "^3.0.0",
     "spotify-web-api-node": "^5.0.2"
