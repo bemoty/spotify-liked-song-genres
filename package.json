@@ -27,7 +27,7 @@
   "homepage": "https://github.com/bemoty/spotify-liked-song-genres#readme",
   "dependencies": {
     "config": "^3.3.6",
-    "cookie-parser": "^1.4.6",
+    "cookie-parser": "^1.4.7",
     "express": "^4.22.0",
     "log4js": "^6.4.0",
     "node-cron": "^3.0.0",
